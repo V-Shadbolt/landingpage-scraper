@@ -426,6 +426,10 @@ def main():
         'https://get.unstoppabledomains.com/collect/',
         'https://get.unstoppabledomains.com/housecoin/',
         'https://get.unstoppabledomains.com/tigershark/',
+        'https://get.unstoppabledomains.com/pundi/',
+        'https://get.unstoppabledomains.com/imtoken/',
+        'https://get.unstoppabledomains.com/ohm/',
+        'https://get.unstoppabledomains.com/arculus/',
     ]
     
     # Remove duplicates while preserving order
