@@ -232,7 +232,7 @@ class DomainTracker:
             needs_update = True
             priority = "high"
             reason = f"Almost sold out ({sold_count}/{total_count} sold)"
-        elif percentage_sold >= 75:
+        elif percentage_sold >= 50:
             needs_update = True
             priority = "medium"
             reason = f"Mostly sold ({sold_count}/{total_count} sold)"
@@ -426,10 +426,17 @@ def main():
         'https://get.unstoppabledomains.com/collect/',
         'https://get.unstoppabledomains.com/housecoin/',
         'https://get.unstoppabledomains.com/tigershark/',
-        'https://get.unstoppabledomains.com/pundi/',
-        'https://get.unstoppabledomains.com/imtoken/',
-        'https://get.unstoppabledomains.com/ohm/',
         'https://get.unstoppabledomains.com/arculus/',
+        'https://get.unstoppabledomains.com/pundi/',
+        'https://get.unstoppabledomains.com/ohm/',
+        'https://get.unstoppabledomains.com/imtoken/',
+        'https://get.unstoppabledomains.com/cgai/',
+        'https://get.unstoppabledomains.com/cpool/',
+        'https://get.unstoppabledomains.com/bird/',
+        'https://get.unstoppabledomains.com/mintify/',
+        'https://get.unstoppabledomains.com/aura/',
+        'https://get.unstoppabledomains.com/degn/',
+        'https://get.unstoppabledomains.com/coca/',
     ]
     
     # Remove duplicates while preserving order

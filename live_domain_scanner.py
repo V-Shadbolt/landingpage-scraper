@@ -176,10 +176,17 @@ class LiveDomainScanner:
             'https://get.unstoppabledomains.com/collect/',
             'https://get.unstoppabledomains.com/housecoin/',
             'https://get.unstoppabledomains.com/tigershark/',
-            'https://get.unstoppabledomains.com/pundi/',
-            'https://get.unstoppabledomains.com/imtoken/',
-            'https://get.unstoppabledomains.com/ohm/',
             'https://get.unstoppabledomains.com/arculus/',
+            'https://get.unstoppabledomains.com/pundi/',
+            'https://get.unstoppabledomains.com/ohm/',
+            'https://get.unstoppabledomains.com/imtoken/',
+            'https://get.unstoppabledomains.com/cgai/',
+            'https://get.unstoppabledomains.com/cpool/',
+            'https://get.unstoppabledomains.com/bird/',
+            'https://get.unstoppabledomains.com/mintify/',
+            'https://get.unstoppabledomains.com/aura/',
+            'https://get.unstoppabledomains.com/degn/',
+            'https://get.unstoppabledomains.com/coca/',
         ]
         
         # Remove duplicates
@@ -476,7 +483,7 @@ class LiveDomainScanner:
                     # Determine action needed
                     if result.percentage_sold >= 90:
                         values[5] = "🚨 High Priority"
-                    elif result.percentage_sold >= 75:
+                    elif result.percentage_sold >= 50:
                         values[5] = "⚠️ Update Needed"
                     else:
                         values[5] = "✅ OK"
@@ -494,7 +501,7 @@ class LiveDomainScanner:
         total_sold = sum(r.sold_domains for r in with_domains)
         total_value = sum(r.total_sold_value for r in with_domains)
         
-        needs_update = [r for r in with_domains if r.percentage_sold >= 75]
+        needs_update = [r for r in with_domains if r.percentage_sold >= 50]
         high_priority = [r for r in with_domains if r.percentage_sold >= 90]
         
         sell_through = (total_sold / total_domains * 100) if total_domains > 0 else 0
@@ -523,7 +530,7 @@ PARTNERS NEEDING UPDATES:"""
             summary += f"\n{priority} {r.partner.upper()}: {r.sold_domains}/{r.total_domains} ({r.percentage_sold:.1f}%)"
         
         # Add all other partners with domains
-        other_partners = [r for r in with_domains if r.percentage_sold < 75]
+        other_partners = [r for r in with_domains if r.percentage_sold < 50]
         if other_partners:
             summary += f"\n\nALL OTHER PARTNERS:"
             for r in other_partners:
@@ -556,7 +563,7 @@ PARTNERS NEEDING UPDATES:"""
         total_sold = sum(r.sold_domains for r in with_domains)
         total_value = sum(r.total_sold_value for r in with_domains)
         
-        needs_update = len([r for r in with_domains if r.percentage_sold >= 75])
+        needs_update = len([r for r in with_domains if r.percentage_sold >= 50])
         high_priority = len([r for r in with_domains if r.percentage_sold >= 90])
         
         sell_through = (total_sold / total_domains * 100) if total_domains > 0 else 0
@@ -589,7 +596,7 @@ PARTNERS NEEDING UPDATES:"""
                         'priority': "high",
                         'reason': f"Almost sold out ({result.sold_domains}/{result.total_domains} sold)"
                     }
-                elif result.percentage_sold >= 75:
+                elif result.percentage_sold >= 50:
                     needs_update_info = {
                         'needs_update': True,
                         'priority': "medium",
