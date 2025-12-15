@@ -179,14 +179,84 @@ class LiveDomainScanner:
             'https://get.unstoppabledomains.com/arculus/',
             'https://get.unstoppabledomains.com/pundi/',
             'https://get.unstoppabledomains.com/ohm/',
-            'https://get.unstoppabledomains.com/imtoken/',
             'https://get.unstoppabledomains.com/cgai/',
-            'https://get.unstoppabledomains.com/cpool/',
+            'https://get.unstoppabledomains.com/anyone/',
+            'https://get.unstoppabledomains.com/dsci/',
+            'https://get.unstoppabledomains.com/chip/',
+            'https://get.unstoppabledomains.com/pokt/',
+            'https://get.unstoppabledomains.com/learn/',
+            'https://get.unstoppabledomains.com/pilot/',
+            'https://get.unstoppabledomains.com/gotchi/',
+            'https://get.unstoppabledomains.com/lunar/',
+            'https://get.unstoppabledomains.com/digibyte/',
+            'https://get.unstoppabledomains.com/mooncat/',
+            'https://get.unstoppabledomains.com/zano/',
+            'https://get.unstoppabledomains.com/agi/',
+            'https://get.unstoppabledomains.com/robot/',
+            'https://get.unstoppabledomains.com/pack/',
+            'https://get.unstoppabledomains.com/imtoken/',
+            'https://get.unstoppabledomains.com/troll/',
+            'https://get.unstoppabledomains.com/web3/',
+            'https://get.unstoppabledomains.com/supernova/',
+            'https://get.unstoppabledomains.com/demos/',
+            'https://get.unstoppabledomains.com/pbdx/',
+            'https://get.unstoppabledomains.com/carbon/',
+            'https://get.unstoppabledomains.com/presearch/',
+            'https://get.unstoppabledomains.com/ai4/',
+            'https://get.unstoppabledomains.com/goblin/',
+            'https://get.unstoppabledomains.com/undeads/',
+            'https://get.unstoppabledomains.com/marketer/',
+            'https://get.unstoppabledomains.com/amp/',
+            'https://get.unstoppabledomains.com/mobix/',
+            'https://get.unstoppabledomains.com/aura/',
+            'https://get.unstoppabledomains.com/agent/',
+
+            #Not Yet Launched
+            'https://get.unstoppabledomains.com/mask/',
+            'https://get.unstoppabledomains.com/namaste/',
+            'https://get.unstoppabledomains.com/yellow/',
+            'https://get.unstoppabledomains.com/frog/',
+            'https://get.unstoppabledomains.com/payfi/',
+            'https://get.unstoppabledomains.com/giga/',
+            'https://get.unstoppabledomains.com/momentum/',
+            'https://get.unstoppabledomains.com/phoenix/',
+            'https://get.unstoppabledomains.com/robinhood/',
+            'https://get.unstoppabledomains.com/openledger/',
+            'https://get.unstoppabledomains.com/horizen/',
+            'https://get.unstoppabledomains.com/etoro/',
+            'https://get.unstoppabledomains.com/magnus/',
+            'https://get.unstoppabledomains.com/paypal/',
+            'https://get.unstoppabledomains.com/chaingpt/',
+            'https://get.unstoppabledomains.com/kalshi/',
+            'https://get.unstoppabledomains.com/lumiterra/',
+            'https://get.unstoppabledomains.com/stable/',
+            'https://get.unstoppabledomains.com/birb/',
+            'https://get.unstoppabledomains.com/inch/',
+            'https://get.unstoppabledomains.com/pump/',
+            'https://get.unstoppabledomains.com/gram/',
+            'https://get.unstoppabledomains.com/payment/',
+            'https://get.unstoppabledomains.com/santa/',
+            'https://get.unstoppabledomains.com/card3/',
+            'https://get.unstoppabledomains.com/kadena/',
+            'https://get.unstoppabledomains.com/bitmart/',
+            'https://get.unstoppabledomains.com/huddleone/',
             'https://get.unstoppabledomains.com/bird/',
             'https://get.unstoppabledomains.com/mintify/',
-            'https://get.unstoppabledomains.com/aura/',
+            'https://get.unstoppabledomains.com/cpool/',
             'https://get.unstoppabledomains.com/degn/',
             'https://get.unstoppabledomains.com/coca/',
+            'https://get.unstoppabledomains.com/rocketpool/',
+            'https://get.unstoppabledomains.com/kaspa/',
+            'https://get.unstoppabledomains.com/etc/',
+            'https://get.unstoppabledomains.com/cfx/',
+            'https://get.unstoppabledomains.com/wolf/',
+            'https://get.unstoppabledomains.com/xlayer/',
+            'https://get.unstoppabledomains.com/zbu/',
+            'https://get.unstoppabledomains.com/zeebu/',
+            'https://get.unstoppabledomains.com/okx/',
+            'https://get.unstoppabledomains.com/kubchain/',
+            'https://get.unstoppabledomains.com/fablo/',
+            'https://get.unstoppabledomains.com/tornadocash/',
         ]
         
         # Remove duplicates
@@ -241,14 +311,30 @@ class LiveDomainScanner:
         try:
             # Setup Selenium
             chrome_options = Options()
-            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--headless=new')  # Use new headless mode
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--disable-dev-shm-usage')
             chrome_options.add_argument('--disable-gpu')
             chrome_options.add_argument('--window-size=1920,1080')
+            # Add user agent to avoid detection
+            chrome_options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            # Disable automation flags
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option('useAutomationExtension', False)
+            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=chrome_options)
+            
+            # Remove webdriver property to avoid detection
+            self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {
+                "userAgent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            })
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            
+            # Enable console log capture
+            self.driver.execute_cdp_cmd('Log.enable', {})
+            
             self.driver.implicitly_wait(10)
             
             # Scan each URL
@@ -300,7 +386,8 @@ class LiveDomainScanner:
             except TimeoutException:
                 has_cards = False
             
-            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            page_source = self.driver.page_source
+            soup = BeautifulSoup(page_source, 'html.parser')
             domain_cards = soup.find_all('div', class_='domain-card')
             
             if not has_cards or len(domain_cards) == 0:
@@ -371,17 +458,21 @@ class LiveDomainScanner:
             # Check button status
             button = card.find('button', class_='add-to-cart')
             button_text = button.text.strip().lower() if button else ""
+            button_classes = button.get('class', []) if button else []
+            has_disabled = button.has_attr('disabled') if button else False
             
-            # Determine status based on button text
+            # Determine status based on button text first
             if button_text == "sold":
                 status = "sold"
             elif button_text == "coming soon":
                 status = "coming_soon"
             elif button_text == "buy now":
                 status = "available"
+            elif button_text.startswith("available"):  # Handles "Available [date/time]"
+                status = "coming_soon"
             else:
                 # Fallback: check if button has sold class and is disabled
-                is_sold_class = button and ('sold' in button.get('class', []) and button.get('disabled'))
+                is_sold_class = button and ('sold' in button_classes and has_disabled)
                 status = "sold" if is_sold_class else "available"
             
             # Get price
@@ -463,30 +554,30 @@ class LiveDomainScanner:
             values = list(self.tree.item(item, 'values'))
             if values[0] == result.partner:
                 if result.status == 'error':
-                    values[1] = "❌ Error"
+                    values[1] = "Error"
                     values[2] = "-"
                     values[3] = "-"
                     values[4] = "-"
                     values[5] = "-"
                 elif not result.has_domains:
-                    values[1] = "✅ Complete"
+                    values[1] = "Complete"
                     values[2] = "No"
                     values[3] = "-"
                     values[4] = "-"
                     values[5] = "-"
                 else:
-                    values[1] = "✅ Complete"
+                    values[1] = "Complete"
                     values[2] = "Yes"
                     values[3] = f"{result.sold_domains}/{result.total_domains}"
                     values[4] = f"{result.percentage_sold:.1f}%"
                     
                     # Determine action needed
                     if result.percentage_sold >= 90:
-                        values[5] = "🚨 High Priority"
+                        values[5] = "High Priority"
                     elif result.percentage_sold >= 50:
-                        values[5] = "⚠️ Update Needed"
+                        values[5] = "Update Needed"
                     else:
-                        values[5] = "✅ OK"
+                        values[5] = "OK"
                 
                 self.tree.item(item, values=values)
                 break
@@ -526,15 +617,14 @@ ACTIONS NEEDED:
 PARTNERS NEEDING UPDATES:"""
         
         for r in needs_update:
-            priority = "🚨" if r.percentage_sold >= 90 else "⚠️"
-            summary += f"\n{priority} {r.partner.upper()}: {r.sold_domains}/{r.total_domains} ({r.percentage_sold:.1f}%)"
+            summary += f"\n{r.partner.upper()}: {r.sold_domains}/{r.total_domains} ({r.percentage_sold:.1f}%)"
         
         # Add all other partners with domains
         other_partners = [r for r in with_domains if r.percentage_sold < 50]
         if other_partners:
             summary += f"\n\nALL OTHER PARTNERS:"
             for r in other_partners:
-                summary += f"\n✅ {r.partner.upper()}: {r.sold_domains}/{r.total_domains} ({r.percentage_sold:.1f}%)"
+                summary += f"\n{r.partner.upper()}: {r.sold_domains}/{r.total_domains} ({r.percentage_sold:.1f}%)"
         
         self.summary_text.delete(1.0, tk.END)
         self.summary_text.insert(1.0, summary)

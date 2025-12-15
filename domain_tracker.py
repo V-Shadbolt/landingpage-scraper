@@ -37,20 +37,32 @@ class DomainTracker:
         try:
             chrome_options = Options()
             if headless:
-                chrome_options.add_argument('--headless')
+                chrome_options.add_argument('--headless=new')  # Use new headless mode
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--disable-dev-shm-usage')
             chrome_options.add_argument('--disable-gpu')
             chrome_options.add_argument('--window-size=1920,1080')
-            chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
+            # Add user agent to avoid detection
+            chrome_options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            # Disable automation flags
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option('useAutomationExtension', False)
+            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             
             # Use WebDriver Manager to automatically manage ChromeDriver
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=chrome_options)
+            
+            # Remove webdriver property to avoid detection
+            self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {
+                "userAgent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            })
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            
             self.driver.implicitly_wait(10)
-            print("✅ Selenium WebDriver initialized successfully")
+            print("Selenium WebDriver initialized successfully")
         except Exception as e:
-            print(f"❌ Failed to initialize Selenium: {e}")
+            print(f"Failed to initialize Selenium: {e}")
             raise Exception(f"Could not initialize WebDriver: {e}")
     
     def __del__(self):
@@ -74,7 +86,7 @@ class DomainTracker:
             if not partner_name:  # Handle case where URL ends with /
                 partner_name = partner_url.rstrip('/').split('/')[-2]
             
-            print(f"🔍 Scanning {partner_name}...")
+            print(f"Scanning {partner_name}...")
             
             html_content = self._get_page_with_selenium(partner_url)
             
@@ -157,17 +169,17 @@ class DomainTracker:
                 WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "domain-card"))
                 )
-                print("   ✅ Domain cards loaded")
+                print("Domain cards loaded")
                 # Only wait extra time if we found cards
                 time.sleep(1)
             except TimeoutException:
-                print("   ⚠️  No domain cards found")
+                print("No domain cards found")
                 # No additional wait if no cards found
             
             return self.driver.page_source
             
         except WebDriverException as e:
-            print(f"   ❌ Selenium error: {e}")
+            print(f"Selenium error: {e}")
             return None
     
     def _extract_domain_info(self, card) -> Dict:
@@ -181,9 +193,25 @@ class DomainTracker:
             if domain_slug and domain_ending:
                 domain_name = domain_slug.text.strip() + domain_ending.text.strip()
             
-            # Check if domain is sold
+            # Check button status
             button = card.find('button', class_='add-to-cart')
-            is_sold = button and ('sold' in button.get('class', []) or button.get('disabled'))
+            button_text = button.text.strip().lower() if button else ""
+            button_classes = button.get('class', []) if button else []
+            has_disabled = button.has_attr('disabled') if button else False
+            
+            # Determine status based on button text first
+            if button_text == "sold":
+                status = "sold"
+            elif button_text == "coming soon":
+                status = "coming_soon"
+            elif button_text == "buy now":
+                status = "available"
+            elif button_text.startswith("available"):  # Handles "Available [date/time]"
+                status = "coming_soon"
+            else:
+                # Fallback: check if button has sold class and is disabled
+                is_sold_class = button and ('sold' in button_classes and has_disabled)
+                status = "sold" if is_sold_class else "available"
             
             # Get price
             price_element = card.find('div', class_='price')
@@ -199,7 +227,7 @@ class DomainTracker:
             
             return {
                 'domain': domain_name,
-                'status': 'sold' if is_sold else 'available',
+                'status': status,
                 'price': price,
                 'price_numeric': price_numeric,
                 'button_text': button.text.strip() if button else ""
@@ -331,28 +359,26 @@ class DomainTracker:
         # Show partners that need updates
         if summary['partners_needing_update'] > 0:
             print("\n" + "-"*40)
-            print("🔴 PARTNERS NEEDING UPDATES:")
+            print("PARTNERS NEEDING UPDATES:")
             print("-"*40)
             
             for result in scan_results['results']:
                 if result.get('needs_update', {}).get('needs_update', False):
                     update_info = result['needs_update']
-                    priority_emoji = "🚨" if update_info['priority'] == 'high' else "⚠️"
-                    print(f"{priority_emoji} {result['partner'].upper()}: {result['sold_domains']}/{result['total_domains']} sold ({result['percentage_sold']}%)")
+                    print(f"{result['partner'].upper()}: {result['sold_domains']}/{result['total_domains']} sold ({result['percentage_sold']}%)")
         
         # Clean summary of all partners with domains
         print("\n" + "-"*40)
-        print("📊 ALL PARTNERS WITH DOMAINS:")
+        print("ALL PARTNERS WITH DOMAINS:")
         print("-"*40)
         
         for result in scan_results['results']:
             if 'error' in result:
-                print(f"❌ {result['partner'].upper()} - ERROR")
+                print(f"{result['partner'].upper()} - ERROR")
             elif not result.get('has_premium_domains', False):
                 continue  # Skip pages without domains in console output
             else:
-                status_emoji = "🔴" if result.get('needs_update', {}).get('needs_update', False) else "✅"
-                print(f"{status_emoji} {result['partner'].upper()}: {result['sold_domains']}/{result['total_domains']} sold ({result['percentage_sold']}%)")
+                print(f"{result['partner'].upper()}: {result['sold_domains']}/{result['total_domains']} sold ({result['percentage_sold']}%)")
     
     def save_results(self, scan_results: Dict, filename: str = None):
         """Save scan results to JSON files"""
@@ -381,10 +407,10 @@ class DomainTracker:
                 for url in pages_without_domains:
                     f.write(f"{url}\n")
             
-            print(f"📄 Main results saved to: {main_filename}")
-            print(f"📋 {len(pages_without_domains)} pages without domains saved to: {no_domains_filename}")
+            print(f"Main results saved to: {main_filename}")
+            print(f"{len(pages_without_domains)} pages without domains saved to: {no_domains_filename}")
         else:
-            print(f"📄 Results saved to: {main_filename}")
+            print(f"Results saved to: {main_filename}")
         
         return main_filename, no_domains_filename if pages_without_domains else None
 
@@ -429,22 +455,92 @@ def main():
         'https://get.unstoppabledomains.com/arculus/',
         'https://get.unstoppabledomains.com/pundi/',
         'https://get.unstoppabledomains.com/ohm/',
-        'https://get.unstoppabledomains.com/imtoken/',
         'https://get.unstoppabledomains.com/cgai/',
-        'https://get.unstoppabledomains.com/cpool/',
+        'https://get.unstoppabledomains.com/anyone/',
+        'https://get.unstoppabledomains.com/dsci/',
+        'https://get.unstoppabledomains.com/chip/',
+        'https://get.unstoppabledomains.com/pokt/',
+        'https://get.unstoppabledomains.com/learn/',
+        'https://get.unstoppabledomains.com/pilot/',
+        'https://get.unstoppabledomains.com/gotchi/',
+        'https://get.unstoppabledomains.com/lunar/',
+        'https://get.unstoppabledomains.com/digibyte/',
+        'https://get.unstoppabledomains.com/mooncat/',
+        'https://get.unstoppabledomains.com/zano/',
+        'https://get.unstoppabledomains.com/agi/',
+        'https://get.unstoppabledomains.com/robot/',
+        'https://get.unstoppabledomains.com/pack/',
+        'https://get.unstoppabledomains.com/imtoken/',
+        'https://get.unstoppabledomains.com/troll/',
+        'https://get.unstoppabledomains.com/web3/',
+        'https://get.unstoppabledomains.com/supernova/',
+        'https://get.unstoppabledomains.com/demos/',
+        'https://get.unstoppabledomains.com/pbdx/',
+        'https://get.unstoppabledomains.com/carbon/',
+        'https://get.unstoppabledomains.com/presearch/',
+        'https://get.unstoppabledomains.com/ai4/',
+        'https://get.unstoppabledomains.com/goblin/',
+        'https://get.unstoppabledomains.com/undeads/',
+        'https://get.unstoppabledomains.com/marketer/',
+        'https://get.unstoppabledomains.com/amp/',
+        'https://get.unstoppabledomains.com/mobix/',
+        'https://get.unstoppabledomains.com/aura/',
+        'https://get.unstoppabledomains.com/agent/',
+
+        #Not Yet Launched
+        'https://get.unstoppabledomains.com/mask/',
+        'https://get.unstoppabledomains.com/namaste/',
+        'https://get.unstoppabledomains.com/yellow/',
+        'https://get.unstoppabledomains.com/frog/',
+        'https://get.unstoppabledomains.com/payfi/',
+        'https://get.unstoppabledomains.com/giga/',
+        'https://get.unstoppabledomains.com/momentum/',
+        'https://get.unstoppabledomains.com/phoenix/',
+        'https://get.unstoppabledomains.com/robinhood/',
+        'https://get.unstoppabledomains.com/openledger/',
+        'https://get.unstoppabledomains.com/horizen/',
+        'https://get.unstoppabledomains.com/etoro/',
+        'https://get.unstoppabledomains.com/magnus/',
+        'https://get.unstoppabledomains.com/paypal/',
+        'https://get.unstoppabledomains.com/chaingpt/',
+        'https://get.unstoppabledomains.com/kalshi/',
+        'https://get.unstoppabledomains.com/lumiterra/',
+        'https://get.unstoppabledomains.com/stable/',
+        'https://get.unstoppabledomains.com/birb/',
+        'https://get.unstoppabledomains.com/inch/',
+        'https://get.unstoppabledomains.com/pump/',
+        'https://get.unstoppabledomains.com/gram/',
+        'https://get.unstoppabledomains.com/payment/',
+        'https://get.unstoppabledomains.com/santa/',
+        'https://get.unstoppabledomains.com/card3/',
+        'https://get.unstoppabledomains.com/kadena/',
+        'https://get.unstoppabledomains.com/bitmart/',
+        'https://get.unstoppabledomains.com/huddleone/',
         'https://get.unstoppabledomains.com/bird/',
         'https://get.unstoppabledomains.com/mintify/',
-        'https://get.unstoppabledomains.com/aura/',
+        'https://get.unstoppabledomains.com/cpool/',
         'https://get.unstoppabledomains.com/degn/',
         'https://get.unstoppabledomains.com/coca/',
+        'https://get.unstoppabledomains.com/rocketpool/',
+        'https://get.unstoppabledomains.com/kaspa/',
+        'https://get.unstoppabledomains.com/etc/',
+        'https://get.unstoppabledomains.com/cfx/',
+        'https://get.unstoppabledomains.com/wolf/',
+        'https://get.unstoppabledomains.com/xlayer/',
+        'https://get.unstoppabledomains.com/zbu/',
+        'https://get.unstoppabledomains.com/zeebu/',
+        'https://get.unstoppabledomains.com/okx/',
+        'https://get.unstoppabledomains.com/kubchain/',
+        'https://get.unstoppabledomains.com/fablo/',
+        'https://get.unstoppabledomains.com/tornadocash/',
     ]
     
     # Remove duplicates while preserving order
     partner_urls = list(dict.fromkeys(partner_urls))
     
-    print("🚀 Starting Domain Sales Tracker")
+    print("Starting Domain Sales Tracker")
     print("=" * 50)
-    print(f"📊 Will scan {len(partner_urls)} partner pages")
+    print(f"Will scan {len(partner_urls)} partner pages")
     print("=" * 50)
     
     # Initialize tracker with Selenium
@@ -462,7 +558,7 @@ def main():
     # Save results
     tracker.save_results(results)
     
-    print("\n✅ Scan completed!")
+    print("\nScan completed!")
 
 
 if __name__ == "__main__":
