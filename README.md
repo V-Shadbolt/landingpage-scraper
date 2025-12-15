@@ -155,15 +155,47 @@ python json_browser.py
 
 ## 🔧 Configuration
 
-Edit the `partner_urls` list in `live_domain_scanner.py` to customize which partner pages to scan:
+### Partner URLs Configuration
+
+Partner URLs are now centrally managed in `partner_urls.py` for easy maintenance. This file is shared between all scanner tools.
+
+#### Adding/Removing Partner URLs
+
+Edit `partner_urls.py` and add URLs to the appropriate list:
 
 ```python
-self.partner_urls = [
+# For launched partners
+LAUNCHED_URLS = [
     'https://get.unstoppabledomains.com/partner1/',
     'https://get.unstoppabledomains.com/partner2/',
-    # Add your partner URLs here
+    # Add your launched partner URLs here
+]
+
+# For partners not yet launched
+NOT_LAUNCHED_URLS = [
+    'https://get.unstoppabledomains.com/upcoming1/',
+    'https://get.unstoppabledomains.com/upcoming2/',
+    # Add your not-yet-launched partner URLs here
 ]
 ```
+
+#### Controlling Which URLs to Scan
+
+In both `live_domain_scanner.py` and `domain_tracker.py`, you can control whether to include not-yet-launched partners:
+
+```python
+# Scan only launched partners
+partner_urls = get_all_urls(include_not_launched=False)
+
+# Scan all partners (launched + not-yet-launched)
+partner_urls = get_all_urls(include_not_launched=True)
+```
+
+**Benefits:**
+- **Single Source of Truth**: Update URLs in one place, affects all tools
+- **Organized Lists**: Separate launched from not-yet-launched partners
+- **Automatic Sorting**: URLs are automatically sorted alphabetically by subpage
+- **Easy Toggling**: Choose which partners to scan with a simple flag
 
 ## 🐛 Troubleshooting
 
