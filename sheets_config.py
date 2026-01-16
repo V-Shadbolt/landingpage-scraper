@@ -108,11 +108,38 @@ def _get_credentials():
     # Option 1: Credentials JSON in environment variable (for GitHub Actions)
     creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
     if creds_json:
-        creds_data = json.loads(creds_json)
-        return Credentials.from_service_account_info(
-            creds_data,
-            scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
-        )
+        try:
+            # Clean up the JSON string - handle potential formatting issues
+            creds_json = creds_json.strip()
+            
+            # Remove BOM if present
+            if creds_json.startswith('\ufeff'):
+                creds_json = creds_json[1:]
+            
+            # Handle if the JSON was accidentally wrapped in extra quotes
+            if creds_json.startswith('"') and creds_json.endswith('"'):
+                creds_json = creds_json[1:-1]
+                # Unescape if it was double-escaped
+                creds_json = creds_json.replace('\\"', '"').replace('\\n', '\n')
+            
+            # Try to parse the JSON
+            creds_data = json.loads(creds_json)
+            
+            return Credentials.from_service_account_info(
+                creds_data,
+                scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+            )
+        except json.JSONDecodeError as e:
+            # Provide helpful debug info
+            print(f"❌ Failed to parse GOOGLE_CREDENTIALS_JSON: {e}")
+            print(f"   JSON length: {len(creds_json)} chars")
+            print(f"   Starts with: {repr(creds_json[:20])}")
+            print(f"   Ends with: {repr(creds_json[-20:])}")
+            raise ValueError(
+                f"Invalid JSON in GOOGLE_CREDENTIALS_JSON secret. "
+                f"Make sure you copied the ENTIRE contents of the JSON key file "
+                f"(starting with {{ and ending with }}). Error: {e}"
+            )
     
     # Option 2: Credentials file path
     creds_file = os.environ.get('GOOGLE_CREDENTIALS_FILE', 'credentials.json')

@@ -57,6 +57,7 @@ jobs:
       
       - name: Run domain scanner
         env:
+          PYTHONUNBUFFERED: '1'
           GITHUB_ACTIONS: 'true'
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
@@ -74,7 +75,7 @@ jobs:
             fi
           fi
           
-          python headless_scanner.py $ARGS
+          python -u headless_scanner.py $ARGS
       
       - name: Generate HTML report
         run: python generate_report.py --input scan_results.json --output docs/index.html
@@ -92,7 +93,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs/ scan_results.json
+          git add docs/
           git diff --staged --quiet || git commit -m "📊 Update scan results - $(date +'%Y-%m-%d')"
           git push
 
