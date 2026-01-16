@@ -10,8 +10,14 @@ from datetime import datetime
 from pathlib import Path
 
 
-def generate_html_report(scan_data: dict, output_path: str = "docs/index.html"):
-    """Generate an HTML dashboard from scan results"""
+def generate_html_report(scan_data: dict, output_path: str = "docs/index.html", github_repo: str = ""):
+    """Generate an HTML dashboard from scan results
+    
+    Args:
+        scan_data: The scan results dictionary
+        output_path: Where to write the HTML file
+        github_repo: GitHub repo URL (e.g., 'https://github.com/user/repo')
+    """
     
     summary = scan_data.get('summary', {})
     results = scan_data.get('results', [])
@@ -139,6 +145,80 @@ def generate_html_report(scan_data: dict, output_path: str = "docs/index.html"):
             border-radius: 100px;
             display: inline-block;
             border: 1px solid var(--border-subtle);
+        }}
+        
+        /* GitHub link */
+        .github-link {{
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }}
+        
+        .github-link:hover {{
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,0.15);
+        }}
+        
+        .github-link svg {{
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }}
+        
+        /* Filter controls */
+        .filter-bar {{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }}
+        
+        .filter-label {{
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }}
+        
+        .filter-slider {{
+            width: 200px;
+            accent-color: var(--accent-purple);
+        }}
+        
+        .filter-value {{
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            min-width: 45px;
+        }}
+        
+        @media (max-width: 640px) {{
+            .github-link {{
+                top: auto;
+                bottom: 1rem;
+                right: 1rem;
+            }}
+            .github-link span {{
+                display: none;
+            }}
         }}
         
         @media (max-width: 640px) {{
@@ -344,68 +424,54 @@ def generate_html_report(scan_data: dict, output_path: str = "docs/index.html"):
 <body>
     <div class="bg-pattern"></div>
     
+    <!-- GitHub Link -->
+    <a href="{github_repo if github_repo else '#'}" target="_blank" class="github-link" id="github-link" {'style="display:none"' if not github_repo else ''}>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        <span>View on GitHub</span>
+    </a>
+    
     <div class="container">
         <header>
             <div class="logo">Unstoppable Domains</div>
             <h1>Partner Dashboard</h1>
             <p class="subtitle">Domain sales tracking across all partner landing pages</p>
-            <div class="scan-time">Last updated: {formatted_date}</div>
+            <div class="scan-time" id="scan-time" data-timestamp="{scan_time}">Last updated: {formatted_date}</div>
         </header>
+        
+        <div class="filter-bar">
+            <span class="filter-label">Healthy threshold:</span>
+            <input type="range" class="filter-slider" id="threshold-slider" min="10" max="90" value="50" step="5">
+            <span class="filter-value" id="threshold-value">&lt;50%</span>
+            <span class="filter-label" style="color: var(--text-muted); font-size: 0.75rem;">(Partners below this % are considered healthy)</span>
+        </div>
         
 '''
     
-    # High Priority Section
-    if high_priority:
-        html += f'''
-        <section class="section">
-            <div class="section-header">
-                <span class="section-icon">🚨</span>
-                <h2 class="section-title">High Priority</h2>
-                <span class="section-count">{len(high_priority)}</span>
-            </div>
-            <div class="partners-grid">
-'''
-        for p in sorted(high_priority, key=lambda x: x.get('percentage_sold', 0), reverse=True):
-            html += generate_partner_card(p, 'high')
-        html += '''
-            </div>
-        </section>
-'''
+    # Collect all partners with domains for JavaScript
+    partners_with_domains = []
+    for r in results:
+        if r.get('has_premium_domains') and not r.get('error'):
+            partners_with_domains.append({
+                'partner': r.get('partner', 'Unknown'),
+                'url': r.get('url', '#'),
+                'sold': r.get('sold_domains', 0),
+                'total': r.get('total_domains', 0),
+                'percentage': r.get('percentage_sold', 0)
+            })
     
-    # Medium Priority Section
-    if medium_priority:
-        html += f'''
-        <section class="section">
-            <div class="section-header">
-                <span class="section-icon">⚠️</span>
-                <h2 class="section-title">Needs Update</h2>
-                <span class="section-count">{len(medium_priority)}</span>
-            </div>
-            <div class="partners-grid">
-'''
-        for p in sorted(medium_priority, key=lambda x: x.get('percentage_sold', 0), reverse=True):
-            html += generate_partner_card(p, 'medium')
-        html += '''
-            </div>
-        </section>
-'''
+    # Convert to JSON for JavaScript
+    import json as json_module
+    partners_json = json_module.dumps(partners_with_domains)
     
-    # Healthy Partners Section
-    if low_priority:
-        html += f'''
-        <section class="section">
-            <div class="section-header">
-                <span class="section-icon">✅</span>
-                <h2 class="section-title">Healthy Partners</h2>
-                <span class="section-count">{len(low_priority)}</span>
-            </div>
-            <div class="partners-grid">
-'''
-        for p in sorted(low_priority, key=lambda x: x.get('partner', '').lower()):
-            html += generate_partner_card(p, 'low')
-        html += '''
-            </div>
-        </section>
+    # Add dynamic sections container
+    html += f'''
+        <!-- Partner data for dynamic filtering -->
+        <script id="partners-data" type="application/json">{partners_json}</script>
+        
+        <!-- Dynamic sections - populated by JavaScript -->
+        <div id="dynamic-sections"></div>
 '''
     
     # No Domains Section
@@ -452,6 +518,117 @@ def generate_html_report(scan_data: dict, output_path: str = "docs/index.html"):
             <p style="margin-top: 0.5rem;">Runs every Sunday</p>
         </footer>
     </div>
+    
+    <script>
+        // Convert timestamp to local time with timezone
+        (function() {
+            const scanTimeEl = document.getElementById('scan-time');
+            const timestamp = scanTimeEl.dataset.timestamp;
+            
+            if (timestamp) {
+                try {
+                    const date = new Date(timestamp);
+                    const options = {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    const localTime = date.toLocaleString(undefined, options);
+                    scanTimeEl.textContent = 'Last updated: ' + localTime;
+                } catch (e) {
+                    console.error('Failed to parse timestamp:', e);
+                }
+            }
+        })();
+        
+        // Dynamic partner sections
+        (function() {
+            const slider = document.getElementById('threshold-slider');
+            const valueDisplay = document.getElementById('threshold-value');
+            const container = document.getElementById('dynamic-sections');
+            const partnersData = JSON.parse(document.getElementById('partners-data').textContent);
+            
+            function createCard(p, priority) {
+                const priorityLabels = { high: 'Critical', medium: 'Update', low: 'Healthy' };
+                return `
+                    <a href="${p.url}" target="_blank" class="partner-card" data-percentage="${p.percentage}">
+                        <div class="partner-header">
+                            <span class="partner-name">${p.partner}</span>
+                            <span class="priority-badge priority-${priority}">${priorityLabels[priority]}</span>
+                        </div>
+                        <div class="partner-stats">
+                            <div class="partner-stat">
+                                <span class="partner-stat-label">Sold</span>
+                                <span class="partner-stat-value">${p.sold}/${p.total}</span>
+                            </div>
+                            <div class="partner-stat">
+                                <span class="partner-stat-label">Rate</span>
+                                <span class="partner-stat-value">${p.percentage.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill progress-${priority}" style="width: ${Math.min(p.percentage, 100)}%"></div>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            function createSection(icon, title, count, cardsHtml) {
+                if (count === 0) return '';
+                return `
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-icon">${icon}</span>
+                            <h2 class="section-title">${title}</h2>
+                            <span class="section-count">${count}</span>
+                        </div>
+                        <div class="partners-grid">
+                            ${cardsHtml}
+                        </div>
+                    </section>
+                `;
+            }
+            
+            function renderSections() {
+                const threshold = parseInt(slider.value);
+                valueDisplay.textContent = '<' + threshold + '%';
+                
+                // Categorize partners based on current threshold
+                const highPriority = partnersData.filter(p => p.percentage >= 90);
+                const needsUpdate = partnersData.filter(p => p.percentage >= threshold && p.percentage < 90);
+                const healthy = partnersData.filter(p => p.percentage < threshold);
+                
+                // Sort each category
+                highPriority.sort((a, b) => b.percentage - a.percentage);
+                needsUpdate.sort((a, b) => b.percentage - a.percentage);
+                healthy.sort((a, b) => a.partner.toLowerCase().localeCompare(b.partner.toLowerCase()));
+                
+                // Build HTML
+                let html = '';
+                
+                html += createSection('🚨', 'High Priority', highPriority.length, 
+                    highPriority.map(p => createCard(p, 'high')).join(''));
+                
+                html += createSection('⚠️', 'Needs Update', needsUpdate.length,
+                    needsUpdate.map(p => createCard(p, 'medium')).join(''));
+                
+                html += createSection('✅', 'Healthy Partners', healthy.length,
+                    healthy.map(p => createCard(p, 'low')).join(''));
+                
+                container.innerHTML = html;
+            }
+            
+            // Initial render
+            renderSections();
+            
+            // Re-render on slider change
+            slider.addEventListener('input', renderSections);
+        })();
+    </script>
 </body>
 </html>
 '''
@@ -481,7 +658,7 @@ def generate_partner_card(partner: dict, priority: str) -> str:
         'low': 'Healthy'
     }
     
-    return f'''                <a href="{url}" target="_blank" class="partner-card">
+    return f'''                <a href="{url}" target="_blank" class="partner-card" data-percentage="{percentage}">
                     <div class="partner-header">
                         <span class="partner-name">{name}</span>
                         <span class="priority-badge priority-{priority}">{priority_labels[priority]}</span>
@@ -505,13 +682,21 @@ def generate_partner_card(partner: dict, priority: str) -> str:
 
 def main():
     import argparse
+    import os
     
     parser = argparse.ArgumentParser(description='Generate HTML report from scan results')
     parser.add_argument('--input', '-i', default='scan_results.json',
                         help='Input JSON file from scanner')
     parser.add_argument('--output', '-o', default='docs/index.html',
                         help='Output HTML file path')
+    parser.add_argument('--github-repo', '-g', default='',
+                        help='GitHub repository URL for the "View on GitHub" link')
     args = parser.parse_args()
+    
+    # Try to auto-detect GitHub repo URL from environment
+    github_repo = args.github_repo
+    if not github_repo and os.environ.get('GITHUB_REPOSITORY'):
+        github_repo = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}"
     
     try:
         with open(args.input, 'r', encoding='utf-8') as f:
@@ -523,7 +708,7 @@ def main():
         print(f"❌ Error: Invalid JSON in {args.input}")
         sys.exit(1)
     
-    generate_html_report(scan_data, args.output)
+    generate_html_report(scan_data, args.output, github_repo=github_repo)
 
 
 if __name__ == "__main__":
