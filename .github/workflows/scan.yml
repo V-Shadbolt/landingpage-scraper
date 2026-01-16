@@ -1,0 +1,128 @@
+name: Weekly Domain Scan
+
+on:
+  # Run every Sunday at 6 AM UTC (adjust for your timezone)
+  # This means results are ready for Monday standup
+  schedule:
+    - cron: '0 6 * * 0'
+  
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      include_not_launched:
+        description: 'Include not-yet-launched partners'
+        required: false
+        default: 'false'
+        type: boolean
+      use_sheets:
+        description: 'Fetch URLs from Google Sheets'
+        required: false
+        default: 'true'
+        type: boolean
+
+# Sets permissions for the GITHUB_TOKEN
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run domain scanner
+        env:
+          GITHUB_ACTIONS: 'true'
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        run: |
+          ARGS="--output scan_results.json"
+          
+          if [ "${{ github.event.inputs.include_not_launched }}" == "true" ]; then
+            ARGS="$ARGS --include-not-launched"
+          fi
+          
+          # Use sheets by default on scheduled runs, or when manually enabled
+          if [ "${{ github.event_name }}" == "schedule" ] || [ "${{ github.event.inputs.use_sheets }}" == "true" ]; then
+            if [ -n "$GOOGLE_SHEET_ID" ] && [ -n "$GOOGLE_CREDENTIALS_JSON" ]; then
+              ARGS="$ARGS --use-sheets"
+            fi
+          fi
+          
+          python headless_scanner.py $ARGS
+      
+      - name: Generate HTML report
+        run: python generate_report.py --input scan_results.json --output docs/index.html
+      
+      - name: Upload scan results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-results
+          path: |
+            scan_results.json
+            docs/index.html
+          retention-days: 90
+      
+      - name: Commit and push results
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/ scan_results.json
+          git diff --staged --quiet || git commit -m "📊 Update scan results - $(date +'%Y-%m-%d')"
+          git push
+
+  # Deploy to GitHub Pages
+  deploy:
+    needs: scan
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      
+      - name: Pull latest changes
+        run: git pull origin ${{ github.ref_name }}
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

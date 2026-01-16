@@ -229,6 +229,102 @@ The tool uses WebDriver Manager to automatically handle ChromeDriver installatio
 - **Total Value**: Sum of all sold domain prices
 - **Priority Actions**: Partners requiring immediate attention
 
+## 🤖 Automated Scanning (GitHub Actions + Pages)
+
+The scanner can run automatically on a schedule and publish results to a web dashboard.
+
+### Manual Trigger
+
+Run a scan anytime from the GitHub Actions tab:
+1. Go to Actions → "Weekly Domain Scan"
+2. Click "Run workflow"
+3. Optionally check "Include not-yet-launched partners"
+
+### Headless Scanner (CLI)
+
+Run scans locally without the GUI:
+
+```bash
+# Basic scan
+python headless_scanner.py
+
+# Include not-yet-launched partners
+python headless_scanner.py --include-not-launched
+
+# Custom output file
+python headless_scanner.py --output my_results.json
+
+# Generate HTML report from results
+python generate_report.py --input my_results.json --output docs/index.html
+```
+
+### Customizing the Schedule
+
+Edit `.github/workflows/scan.yml` to change when the scan runs:
+
+```yaml
+schedule:
+  # Run every Sunday at 6 AM UTC
+  - cron: '0 6 * * 0'
+  
+  # Run every day at midnight
+  # - cron: '0 0 * * *'
+  
+  # Run Monday-Friday at 8 AM UTC
+  # - cron: '0 8 * * 1-5'
+```
+
+### Google Sheets Integration
+
+Manage partner URLs from a Google Sheet instead of editing code. 
+
+#### Sheet Format
+
+Create a Google Sheet with two columns:
+
+| URL | Status |
+|-----|--------|
+| https://get.unstoppabledomains.com/moon/ | launched |
+| https://get.unstoppabledomains.com/upcoming/ | not_launched |
+
+#### Setup Steps
+
+1. **Create a Google Cloud Service Account:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project (or use existing)
+   - Enable the **Google Sheets API**
+   - Go to **Credentials** → **Create Credentials** → **Service Account**
+   - Download the JSON key file
+
+2. **Share your Google Sheet:**
+   - Open the JSON key file and copy the `client_email` value
+   - Share your Google Sheet with that email (Viewer access is enough)
+
+3. **Get your Sheet ID:**
+   - From the sheet URL: `https://docs.google.com/spreadsheets/d/SHEET_ID_HERE/edit`
+   - Copy the `SHEET_ID_HERE` part
+
+4. **Add GitHub Secrets:**
+   - Go to your repo → **Settings** → **Secrets and variables** → **Actions**
+   - Add `GOOGLE_SHEET_ID` = your sheet ID
+   - Add `GOOGLE_CREDENTIALS_JSON` = the entire contents of the JSON key file
+
+5. **Run a scan** - it will now pull URLs from your sheet!
+
+#### Local Usage
+
+```bash
+# Set environment variables
+export GOOGLE_SHEET_ID="your-sheet-id"
+export GOOGLE_CREDENTIALS_FILE="path/to/credentials.json"
+
+# Run with sheets
+python headless_scanner.py --use-sheets
+
+# Test connection
+python sheets_config.py
+```
+
 ## 🤝 Contributing
 
 1. Fork the repository
