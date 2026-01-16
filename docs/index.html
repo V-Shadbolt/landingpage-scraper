@@ -108,6 +108,80 @@
             border: 1px solid var(--border-subtle);
         }
         
+        /* GitHub link */
+        .github-link {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        
+        .github-link:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,0.15);
+        }
+        
+        .github-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        /* Filter controls */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+        
+        .filter-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .filter-slider {
+            width: 200px;
+            accent-color: var(--accent-purple);
+        }
+        
+        .filter-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            min-width: 45px;
+        }
+        
+        @media (max-width: 640px) {
+            .github-link {
+                top: auto;
+                bottom: 1rem;
+                right: 1rem;
+            }
+            .github-link span {
+                display: none;
+            }
+        }
+        
         @media (max-width: 640px) {
             h1 { font-size: 2.5rem; }
         }
@@ -311,1341 +385,151 @@
 <body>
     <div class="bg-pattern"></div>
     
+    <!-- GitHub Link -->
+    <a href="https://github.com/V-Shadbolt/landingpage-scraper" target="_blank" class="github-link" id="github-link" >
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        <span>View on GitHub</span>
+    </a>
+    
     <div class="container">
         <header>
             <div class="logo">Unstoppable Domains</div>
             <h1>Partner Dashboard</h1>
             <p class="subtitle">Domain sales tracking across all partner landing pages</p>
-            <div class="scan-time">Last updated: January 16, 2026 at 09:29 PM</div>
+            <div class="scan-time" id="scan-time" data-timestamp="2026-01-16T21:59:17.133369">Last updated: January 16, 2026 at 09:59 PM</div>
         </header>
         
+        <div class="filter-bar">
+            <span class="filter-label">Healthy threshold:</span>
+            <input type="range" class="filter-slider" id="threshold-slider" min="10" max="90" value="50" step="5">
+            <span class="filter-value" id="threshold-value">&lt;50%</span>
+            <span class="filter-label" style="color: var(--text-muted); font-size: 0.75rem;">(Partners below this % are considered healthy)</span>
+        </div>
+        
 
-        <section class="section">
-            <div class="section-header">
-                <span class="section-icon">✅</span>
-                <h2 class="section-title">Healthy Partners</h2>
-                <span class="section-count">69</span>
-            </div>
-            <div class="partners-grid">
-                <a href="https://get.unstoppabledomains.com/agent/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">agent</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/31</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">9.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 9.68%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/agi/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">agi</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">4/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">20.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 20.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/ai4/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">ai4</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/8</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">37.5%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 37.5%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/amp/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">amp</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/anyone/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">anyone</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">4/35</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">11.4%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 11.43%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/arculus/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">arculus</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/ask/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">ask</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/7</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">14.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 14.29%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/ath/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">ath</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">5.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 5.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/aura/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">aura</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/bch/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">bch</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">14/37</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">37.8%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 37.84%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/bobi/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">bobi</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/7</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/brave/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">brave</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/23</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">13.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 13.04%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/bunni/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">bunni</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">33.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 33.33%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/calicoin/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">calicoin</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/7</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/carbon/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">carbon</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/cgai/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">cgai</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/9</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">22.2%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 22.22%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/chip/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">chip</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/15</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">13.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 13.33%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/collect/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">collect</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/dejay/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">dejay</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">5/19</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">26.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 26.32%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/demos/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">demos</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">10.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 10.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/derad/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">derad</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/8</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">25.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 25.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/digibyte/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">digibyte</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/36</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">2.8%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 2.78%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/dsci/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">dsci</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">7/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">35.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 35.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/goblin/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">goblin</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/gotchi/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">gotchi</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/7</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/hegecoin/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">hegecoin</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/8</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/her/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">her</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">4/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">33.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 33.33%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/housecoin/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">housecoin</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/35</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/hub/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">hub</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/15</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/imtoken/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">imtoken</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/kpm/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">kpm</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">8.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 8.33%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/learn/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">learn</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">6/36</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/ltc/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">ltc</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">8/38</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">21.1%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 21.05%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/lunar/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">lunar</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">5/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">41.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 41.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/marketer/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">marketer</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/18</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/mery/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">mery</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/8</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/mobix/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">mobix</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/moon/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">moon</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/9</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">11.1%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 11.11%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/mooncat/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">mooncat</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/mycircle/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">mycircle</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/8</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">25.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 25.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/nibi/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">nibi</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/ohm/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">ohm</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/35</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">8.6%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 8.57%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/onchain/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">onchain</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/15</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">20.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 20.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/openx/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">openx</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/14</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">14.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 14.29%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pack/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pack</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pbdx/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pbdx</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">8.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 8.33%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pendle/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pendle</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/36</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">5.6%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 5.56%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pengu/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pengu</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">5/11</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">45.5%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 45.45%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pilot/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pilot</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pokt/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pokt</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">6/36</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/presearch/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">presearch</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/15</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">20.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 20.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/pundi/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">pundi</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/35</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">2.9%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 2.86%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/quantum/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">quantum</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/robot/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">robot</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/13</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">7.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 7.69%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/sonic/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">sonic</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">3/13</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">23.1%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 23.08%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/south/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">south</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/supernova/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">supernova</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/swamp/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">swamp</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/tigershark/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">tigershark</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/troll/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">troll</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">16.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 16.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/twin/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">twin</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">5/12</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">41.7%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 41.67%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/u/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">u</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/undeads/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">undeads</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/36</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">2.8%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 2.78%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/verge/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">verge</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">0/35</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">0.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 0.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/web3/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">web3</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">4/20</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">20.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 20.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/xec/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">xec</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">2/6</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">33.3%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 33.33%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/xyo/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">xyo</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">4/14</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">28.6%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 28.57%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/yellow/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">yellow</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">4/16</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">25.0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 25.0%"></div>
-                    </div>
-                </a>
-                <a href="https://get.unstoppabledomains.com/zano/" target="_blank" class="partner-card">
-                    <div class="partner-header">
-                        <span class="partner-name">zano</span>
-                        <span class="priority-badge priority-low">Healthy</span>
-                    </div>
-                    <div class="partner-stats">
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Sold</span>
-                            <span class="partner-stat-value">1/36</span>
-                        </div>
-                        <div class="partner-stat">
-                            <span class="partner-stat-label">Rate</span>
-                            <span class="partner-stat-value">2.8%</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill progress-low" style="width: 2.78%"></div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
+        <!-- Partner data for dynamic filtering -->
+        <script id="partners-data" type="application/json">[{"partner": "agent", "url": "https://get.unstoppabledomains.com/agent/", "sold": 3, "total": 31, "percentage": 9.68}, {"partner": "agi", "url": "https://get.unstoppabledomains.com/agi/", "sold": 3, "total": 20, "percentage": 15.0}, {"partner": "ai4", "url": "https://get.unstoppabledomains.com/ai4/", "sold": 3, "total": 8, "percentage": 37.5}, {"partner": "amp", "url": "https://get.unstoppabledomains.com/amp/", "sold": 0, "total": 20, "percentage": 0.0}, {"partner": "anyone", "url": "https://get.unstoppabledomains.com/anyone/", "sold": 4, "total": 35, "percentage": 11.43}, {"partner": "arculus", "url": "https://get.unstoppabledomains.com/arculus/", "sold": 1, "total": 6, "percentage": 16.67}, {"partner": "ask", "url": "https://get.unstoppabledomains.com/ask/", "sold": 1, "total": 7, "percentage": 14.29}, {"partner": "ath", "url": "https://get.unstoppabledomains.com/ath/", "sold": 1, "total": 20, "percentage": 5.0}, {"partner": "aura", "url": "https://get.unstoppabledomains.com/aura/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "bch", "url": "https://get.unstoppabledomains.com/bch/", "sold": 14, "total": 37, "percentage": 37.84}, {"partner": "bobi", "url": "https://get.unstoppabledomains.com/bobi/", "sold": 0, "total": 7, "percentage": 0.0}, {"partner": "brave", "url": "https://get.unstoppabledomains.com/brave/", "sold": 3, "total": 23, "percentage": 13.04}, {"partner": "bunni", "url": "https://get.unstoppabledomains.com/bunni/", "sold": 2, "total": 6, "percentage": 33.33}, {"partner": "calicoin", "url": "https://get.unstoppabledomains.com/calicoin/", "sold": 0, "total": 7, "percentage": 0.0}, {"partner": "carbon", "url": "https://get.unstoppabledomains.com/carbon/", "sold": 1, "total": 6, "percentage": 16.67}, {"partner": "cgai", "url": "https://get.unstoppabledomains.com/cgai/", "sold": 2, "total": 9, "percentage": 22.22}, {"partner": "chip", "url": "https://get.unstoppabledomains.com/chip/", "sold": 2, "total": 15, "percentage": 13.33}, {"partner": "collect", "url": "https://get.unstoppabledomains.com/collect/", "sold": 1, "total": 6, "percentage": 16.67}, {"partner": "dejay", "url": "https://get.unstoppabledomains.com/dejay/", "sold": 5, "total": 19, "percentage": 26.32}, {"partner": "demos", "url": "https://get.unstoppabledomains.com/demos/", "sold": 2, "total": 20, "percentage": 10.0}, {"partner": "derad", "url": "https://get.unstoppabledomains.com/derad/", "sold": 2, "total": 8, "percentage": 25.0}, {"partner": "digibyte", "url": "https://get.unstoppabledomains.com/digibyte/", "sold": 1, "total": 36, "percentage": 2.78}, {"partner": "dsci", "url": "https://get.unstoppabledomains.com/dsci/", "sold": 7, "total": 20, "percentage": 35.0}, {"partner": "goblin", "url": "https://get.unstoppabledomains.com/goblin/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "gotchi", "url": "https://get.unstoppabledomains.com/gotchi/", "sold": 0, "total": 7, "percentage": 0.0}, {"partner": "hegecoin", "url": "https://get.unstoppabledomains.com/hegecoin/", "sold": 0, "total": 8, "percentage": 0.0}, {"partner": "her", "url": "https://get.unstoppabledomains.com/her/", "sold": 3, "total": 12, "percentage": 25.0}, {"partner": "housecoin", "url": "https://get.unstoppabledomains.com/housecoin/", "sold": 0, "total": 35, "percentage": 0.0}, {"partner": "hub", "url": "https://get.unstoppabledomains.com/hub/", "sold": 0, "total": 15, "percentage": 0.0}, {"partner": "imtoken", "url": "https://get.unstoppabledomains.com/imtoken/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "kpm", "url": "https://get.unstoppabledomains.com/kpm/", "sold": 1, "total": 12, "percentage": 8.33}, {"partner": "learn", "url": "https://get.unstoppabledomains.com/learn/", "sold": 6, "total": 36, "percentage": 16.67}, {"partner": "ltc", "url": "https://get.unstoppabledomains.com/ltc/", "sold": 8, "total": 38, "percentage": 21.05}, {"partner": "lunar", "url": "https://get.unstoppabledomains.com/lunar/", "sold": 5, "total": 12, "percentage": 41.67}, {"partner": "marketer", "url": "https://get.unstoppabledomains.com/marketer/", "sold": 3, "total": 18, "percentage": 16.67}, {"partner": "mery", "url": "https://get.unstoppabledomains.com/mery/", "sold": 0, "total": 8, "percentage": 0.0}, {"partner": "mobix", "url": "https://get.unstoppabledomains.com/mobix/", "sold": 0, "total": 12, "percentage": 0.0}, {"partner": "moon", "url": "https://get.unstoppabledomains.com/moon/", "sold": 1, "total": 9, "percentage": 11.11}, {"partner": "mooncat", "url": "https://get.unstoppabledomains.com/mooncat/", "sold": 1, "total": 6, "percentage": 16.67}, {"partner": "mycircle", "url": "https://get.unstoppabledomains.com/mycircle/", "sold": 2, "total": 8, "percentage": 25.0}, {"partner": "nibi", "url": "https://get.unstoppabledomains.com/nibi/", "sold": 0, "total": 12, "percentage": 0.0}, {"partner": "ohm", "url": "https://get.unstoppabledomains.com/ohm/", "sold": 3, "total": 35, "percentage": 8.57}, {"partner": "onchain", "url": "https://get.unstoppabledomains.com/onchain/", "sold": 3, "total": 15, "percentage": 20.0}, {"partner": "openx", "url": "https://get.unstoppabledomains.com/openx/", "sold": 2, "total": 14, "percentage": 14.29}, {"partner": "pack", "url": "https://get.unstoppabledomains.com/pack/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "pbdx", "url": "https://get.unstoppabledomains.com/pbdx/", "sold": 1, "total": 12, "percentage": 8.33}, {"partner": "pendle", "url": "https://get.unstoppabledomains.com/pendle/", "sold": 2, "total": 36, "percentage": 5.56}, {"partner": "pengu", "url": "https://get.unstoppabledomains.com/pengu/", "sold": 5, "total": 11, "percentage": 45.45}, {"partner": "pilot", "url": "https://get.unstoppabledomains.com/pilot/", "sold": 1, "total": 6, "percentage": 16.67}, {"partner": "pokt", "url": "https://get.unstoppabledomains.com/pokt/", "sold": 6, "total": 36, "percentage": 16.67}, {"partner": "presearch", "url": "https://get.unstoppabledomains.com/presearch/", "sold": 3, "total": 15, "percentage": 20.0}, {"partner": "pundi", "url": "https://get.unstoppabledomains.com/pundi/", "sold": 1, "total": 35, "percentage": 2.86}, {"partner": "quantum", "url": "https://get.unstoppabledomains.com/quantum/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "robot", "url": "https://get.unstoppabledomains.com/robot/", "sold": 1, "total": 13, "percentage": 7.69}, {"partner": "sonic", "url": "https://get.unstoppabledomains.com/sonic/", "sold": 3, "total": 13, "percentage": 23.08}, {"partner": "south", "url": "https://get.unstoppabledomains.com/south/", "sold": 0, "total": 12, "percentage": 0.0}, {"partner": "supernova", "url": "https://get.unstoppabledomains.com/supernova/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "swamp", "url": "https://get.unstoppabledomains.com/swamp/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "tigershark", "url": "https://get.unstoppabledomains.com/tigershark/", "sold": 0, "total": 20, "percentage": 0.0}, {"partner": "troll", "url": "https://get.unstoppabledomains.com/troll/", "sold": 1, "total": 6, "percentage": 16.67}, {"partner": "twin", "url": "https://get.unstoppabledomains.com/twin/", "sold": 5, "total": 12, "percentage": 41.67}, {"partner": "u", "url": "https://get.unstoppabledomains.com/u/", "sold": 0, "total": 6, "percentage": 0.0}, {"partner": "undeads", "url": "https://get.unstoppabledomains.com/undeads/", "sold": 1, "total": 36, "percentage": 2.78}, {"partner": "verge", "url": "https://get.unstoppabledomains.com/verge/", "sold": 0, "total": 35, "percentage": 0.0}, {"partner": "web3", "url": "https://get.unstoppabledomains.com/web3/", "sold": 4, "total": 20, "percentage": 20.0}, {"partner": "xec", "url": "https://get.unstoppabledomains.com/xec/", "sold": 2, "total": 6, "percentage": 33.33}, {"partner": "xyo", "url": "https://get.unstoppabledomains.com/xyo/", "sold": 4, "total": 14, "percentage": 28.57}, {"partner": "yellow", "url": "https://get.unstoppabledomains.com/yellow/", "sold": 4, "total": 16, "percentage": 25.0}, {"partner": "zano", "url": "https://get.unstoppabledomains.com/zano/", "sold": 1, "total": 36, "percentage": 2.78}]</script>
+        
+        <!-- Dynamic sections - populated by JavaScript -->
+        <div id="dynamic-sections"></div>
 
         <footer>
             <p>Automated scan powered by <a href="https://github.com">GitHub Actions</a></p>
             <p style="margin-top: 0.5rem;">Runs every Sunday</p>
         </footer>
     </div>
+    
+    <script>
+        // Convert timestamp to local time with timezone
+        (function() {
+            const scanTimeEl = document.getElementById('scan-time');
+            const timestamp = scanTimeEl.dataset.timestamp;
+            
+            if (timestamp) {
+                try {
+                    const date = new Date(timestamp);
+                    const options = {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    const localTime = date.toLocaleString(undefined, options);
+                    scanTimeEl.textContent = 'Last updated: ' + localTime;
+                } catch (e) {
+                    console.error('Failed to parse timestamp:', e);
+                }
+            }
+        })();
+        
+        // Dynamic partner sections
+        (function() {
+            const slider = document.getElementById('threshold-slider');
+            const valueDisplay = document.getElementById('threshold-value');
+            const container = document.getElementById('dynamic-sections');
+            const partnersData = JSON.parse(document.getElementById('partners-data').textContent);
+            
+            function createCard(p, priority) {
+                const priorityLabels = { high: 'Critical', medium: 'Update', low: 'Healthy' };
+                return `
+                    <a href="${p.url}" target="_blank" class="partner-card" data-percentage="${p.percentage}">
+                        <div class="partner-header">
+                            <span class="partner-name">${p.partner}</span>
+                            <span class="priority-badge priority-${priority}">${priorityLabels[priority]}</span>
+                        </div>
+                        <div class="partner-stats">
+                            <div class="partner-stat">
+                                <span class="partner-stat-label">Sold</span>
+                                <span class="partner-stat-value">${p.sold}/${p.total}</span>
+                            </div>
+                            <div class="partner-stat">
+                                <span class="partner-stat-label">Rate</span>
+                                <span class="partner-stat-value">${p.percentage.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill progress-${priority}" style="width: ${Math.min(p.percentage, 100)}%"></div>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            function createSection(icon, title, count, cardsHtml) {
+                if (count === 0) return '';
+                return `
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-icon">${icon}</span>
+                            <h2 class="section-title">${title}</h2>
+                            <span class="section-count">${count}</span>
+                        </div>
+                        <div class="partners-grid">
+                            ${cardsHtml}
+                        </div>
+                    </section>
+                `;
+            }
+            
+            function renderSections() {
+                const threshold = parseInt(slider.value);
+                valueDisplay.textContent = '<' + threshold + '%';
+                
+                // Categorize partners based on current threshold
+                const highPriority = partnersData.filter(p => p.percentage >= 90);
+                const needsUpdate = partnersData.filter(p => p.percentage >= threshold && p.percentage < 90);
+                const healthy = partnersData.filter(p => p.percentage < threshold);
+                
+                // Sort each category
+                highPriority.sort((a, b) => b.percentage - a.percentage);
+                needsUpdate.sort((a, b) => b.percentage - a.percentage);
+                healthy.sort((a, b) => a.partner.toLowerCase().localeCompare(b.partner.toLowerCase()));
+                
+                // Build HTML
+                let html = '';
+                
+                html += createSection('🚨', 'High Priority', highPriority.length, 
+                    highPriority.map(p => createCard(p, 'high')).join(''));
+                
+                html += createSection('⚠️', 'Needs Update', needsUpdate.length,
+                    needsUpdate.map(p => createCard(p, 'medium')).join(''));
+                
+                html += createSection('✅', 'Healthy Partners', healthy.length,
+                    healthy.map(p => createCard(p, 'low')).join(''));
+                
+                container.innerHTML = html;
+            }
+            
+            // Initial render
+            renderSections();
+            
+            // Re-render on slider change
+            slider.addEventListener('input', renderSections);
+        })();
+    </script>
 </body>
 </html>
